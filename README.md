@@ -57,7 +57,7 @@ Angular app just reads the resulting static JSON.
 ```bash
 npm ci
 node scraper/index.mjs   # writes public/data/schedule.json from live wiki data
-npx ng serve              # http://localhost:4200
+npx ng serve             # http://localhost:4200
 ```
 
 ## Deployment
@@ -69,3 +69,10 @@ setup: repo Settings → Pages → **Source: GitHub Actions**.
 If this repo isn't deployed as a standard project page
 (`https://<user>.github.io/<repo>/`) — e.g. a custom domain or a user/org root page —
 change the `--base-href` flag in the workflow to `"/"`.
+
+## Disclaimer
+
+This is an unofficial, fan-made project and isn't affiliated with, endorsed by, or
+sponsored by Nexon Games, Yostar, or any other rights holder of Blue Archive. All
+game assets, character names, and artwork remain the property of their respective
+owners.
