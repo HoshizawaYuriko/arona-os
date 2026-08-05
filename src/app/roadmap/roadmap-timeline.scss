@@ -1,0 +1,354 @@
+// Palette: documented default categorical slots 1 (blue) & 2 (orange) — validated
+// via scripts/validate_palette.js for this exact pair, both modes, before use.
+:host {
+  display: block;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --gridline: #e1e0d9;
+  --baseline: #c3c2b7;
+  --series-event: #2a78d6;
+  --series-banner: #eb6834;
+  --status-warning: #fab219;
+  --border: rgba(11, 11, 11, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --gridline: #2c2c2a;
+    --baseline: #383835;
+    --series-event: #3987e5;
+    --series-banner: #d95926;
+    --status-warning: #fab219;
+    --border: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.roadmap {
+  position: relative;
+  color: var(--text-primary);
+}
+
+.roadmap__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.roadmap__presets {
+  display: flex;
+  gap: 0.4rem;
+}
+
+button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--text-secondary);
+  }
+}
+
+// Legend — always present since this chart carries 2 categorical series (event/banner).
+// Confirmed/predicted and irregular are encoded by shape (fill/border/icon), not by an
+// extra hue, so identity never relies on color alone.
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legend__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+
+  &--event { background: var(--series-event); }
+  &--banner { background: var(--series-banner); }
+}
+
+.legend__key {
+  width: 18px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 3px;
+
+  &--confirmed { background: var(--text-muted); }
+  &--predicted { background: transparent; border: 1.5px dashed var(--text-muted); }
+  &--irregular {
+    width: auto;
+    height: auto;
+    color: var(--status-warning);
+    font-size: 0.8rem;
+  }
+}
+
+.timeline-wrap {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+// Genuinely outside the scroll container (see template comment) — never scrolls,
+// so it can never end up sitting on top of a bar.
+.lane-labels {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--gridline);
+  background: var(--surface-1);
+}
+
+.lane-labels__spacer {
+  height: 26px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--gridline);
+}
+
+.lane-labels__label {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--gridline);
+  white-space: nowrap;
+}
+
+.timeline {
+  flex: 1 1 auto;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  min-width: 0;
+}
+
+.timeline__inner {
+  position: relative;
+  min-height: 100px;
+}
+
+.timeline__months {
+  position: relative;
+  height: 26px;
+  border-bottom: 1px solid var(--gridline);
+  margin-bottom: 4px;
+}
+
+.timeline__month {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  border-left: 1px solid var(--gridline);
+  padding-left: 4px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+// Recessive furniture: hairline, solid, one step off the surface — never competes with data.
+.timeline__today {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--baseline);
+  z-index: 1;
+}
+
+// Sits just below the month header, not beside it — the month label and "Today" chip
+// occupy the same x position when today falls inside that month, so stacking them
+// vertically is what keeps them from merging into unreadable overlapping text.
+.timeline__today-label {
+  position: absolute;
+  top: 30px;
+  left: 3px;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  background: var(--surface-1);
+  padding: 0 4px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+.lane {
+  position: relative;
+  border-bottom: 1px solid var(--gridline);
+}
+
+// A card, not a bar: sized (see layout.ts) so a 1-week item lands close to 16:9,
+// filled with the banner/event's actual art. A 3px top stripe in the lane's hue keeps
+// event-vs-banner identity legible even when the image dominates the card, and a solid
+// fill (the old bar treatment) is the fallback for the rare item with no resolved image.
+.bar {
+  position: absolute;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: default;
+  box-sizing: border-box;
+  background: var(--gridline); // shows through while the hotlinked image loads
+  border-top: 3px solid transparent;
+
+  &--event { border-top-color: var(--series-event); }
+  &--banner { border-top-color: var(--series-banner); }
+
+  // Events fit their art with `contain` (see .bar__image) at a fixed height, so a wide
+  // 2-week card can end up with real letterbox space either side of a narrower
+  // 1-week-equivalent image. Filling that with the strong lane color read as "the
+  // whole card is blue" instead of an accent — the border-top already carries that
+  // identity, so the letterbox itself just stays the neutral loading-placeholder tone
+  // (.bar's own `background` above), and lane color is reserved for the fallback below.
+  &:not(:has(.bar__image)) {
+    &.bar--event { background: var(--series-event); }
+    &.bar--banner { background: var(--series-banner); }
+  }
+
+  // Predicted = de-emphasized, not a new identity color (mirrors the stat-tile
+  // "history de-emphasized, current in accent" idiom) — dims the art itself, dashes
+  // the card's own border, and — since a dashed border can get lost under a busy
+  // image — a literal "Predicted" text chip carries the state explicitly (see
+  // .bar__chip--predicted), so nothing here depends on the dash alone being noticed.
+  &--predicted {
+    border: 1.5px dashed var(--border);
+    border-top: 3px dashed var(--border);
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: 2px solid var(--border);
+    outline-offset: 1px;
+  }
+}
+
+.bar__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; // banners: fill edge-to-edge (see layout.ts, height is derived to match)
+}
+
+// Events: fixed card height regardless of duration (a 2-week card would otherwise be
+// exactly double height, per width-derived sizing — see layout.ts) — so instead of
+// stretching/cropping the art to fill that, center it at its natural aspect and let
+// the lane-colored backdrop show on whichever side doesn't get filled.
+.bar--event .bar__image {
+  object-fit: contain;
+}
+
+.bar--predicted .bar__image {
+  opacity: 0.55;
+}
+
+// Bottom gradient strip so the name stays legible over art of any brightness —
+// text never wears the series color (see marks-and-anatomy) and an image is the same
+// problem: it needs its own scrim rather than relying on the art being dark enough.
+.bar__overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 6px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+.bar__label {
+  display: block;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.bar__chips {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 3px;
+}
+
+// Status is never color-alone: an explicit label (not just the dashed border/opacity
+// treatment) and, for irregular, an icon — both on the reserved warning step, distinct
+// from both categorical slots.
+.bar__chip {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.bar__chip--irregular {
+  color: var(--status-warning);
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 10;
+  max-width: 280px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.78rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip__meta {
+  color: var(--text-secondary);
+}
+
+.tooltip__warn {
+  color: var(--status-warning);
+  margin-top: 0.25rem;
+}
+
+.table-view {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+
+  th, td {
+    text-align: left;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--gridline);
+  }
+
+  th {
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+}

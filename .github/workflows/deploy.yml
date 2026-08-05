@@ -1,0 +1,57 @@
+name: Scrape, build, and deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Daily — picks up newly-announced JP content. GitHub may run scheduled workflows a
+    # few minutes late under load, and auto-disables the cron after 60 days with no repo
+    # activity, so keep an eye on the "Last updated" timestamp shown on the site itself.
+    - cron: '17 4 * * *'
+  workflow_dispatch: {}
+
+# Only one deploy in flight at a time; a newer push/run supersedes an in-progress one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - run: npm ci
+
+      # Writes public/data/schedule.json. Nothing here is committed back to the repo —
+      # it only ever exists inside this run's checkout and the deployed build output.
+      - run: node scraper/index.mjs
+
+      # --base-href must match the Pages URL path. Works as-is for the default
+      # "project page" case (https://<user>.github.io/<repo>/). If this repo is deployed
+      # to a user/org root page or a custom domain instead, change this to "/".
+      - run: npx ng build --base-href "/${{ github.event.repository.name }}/"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/arona-os/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

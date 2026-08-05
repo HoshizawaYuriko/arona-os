@@ -1,0 +1,37 @@
+:host {
+  display: block;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #0b0b0b;
+  background: #f9f9f7;
+  // Desktop-only by design (no mobile layout is maintained) — the timeline's own
+  // horizontal scroll needs real width to be worth having, so use most of a widescreen
+  // viewport instead of the narrow reading-column width the old flat-list version used.
+  max-width: min(96vw, 1800px);
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.page__header {
+  margin-bottom: 1.25rem;
+}
+
+.page__subtitle {
+  color: #52514e;
+  max-width: 160ch;
+}
+
+.page__meta {
+  font-size: 0.85rem;
+  color: #898781;
+}
+
+.error {
+  color: #d03b3b;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host { color: #ffffff; background: #0d0d0d; }
+  .page__subtitle { color: #c3c2b7; }
+  .page__meta { color: #898781; }
+}

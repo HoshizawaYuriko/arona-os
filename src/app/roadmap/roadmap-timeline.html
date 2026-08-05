@@ -1,0 +1,149 @@
+<section class="roadmap">
+  <div class="roadmap__toolbar">
+    <div class="roadmap__presets">
+      <button type="button" (click)="jumpToToday()">Today</button>
+      <button type="button" (click)="toggleHistory()">
+        {{ showFullHistory() ? 'Hide older history' : 'Show full history' }}
+      </button>
+    </div>
+    <button type="button" class="roadmap__view-toggle" (click)="toggleView()">
+      {{ tableView() ? 'View as timeline' : 'View as table' }}
+    </button>
+  </div>
+
+  <div class="legend">
+    <span class="legend__item"><i class="legend__swatch legend__swatch--event"></i>Events</span>
+    <span class="legend__item"><i class="legend__swatch legend__swatch--banner"></i>Banners</span>
+    <span class="legend__item"><i class="legend__key legend__key--confirmed"></i>Confirmed</span>
+    <span class="legend__item"><i class="legend__key legend__key--predicted"></i>Predicted</span>
+    <span class="legend__item"><i class="legend__key legend__key--irregular">&#9888;</i>Verify manually</span>
+  </div>
+
+  @if (!tableView()) {
+    <div class="timeline-wrap">
+      <!-- Frozen label column, genuinely outside the scroll container — a sticky
+           column inside it would float over whatever card happens to be scrolled
+           under the left edge instead of naming the lane. -->
+      <div class="lane-labels">
+        <div class="lane-labels__spacer"></div>
+        <div class="lane-labels__label" [style.height.px]="eventLaneHeight()">Events</div>
+        <div class="lane-labels__label" [style.height.px]="bannerLaneHeight()">Banners</div>
+      </div>
+
+      <div class="timeline" #scrollEl>
+        <div class="timeline__inner" [style.width.px]="totalWidth()">
+          <div class="timeline__months">
+            @for (m of months(); track m.label + m.left) {
+              <div class="timeline__month" [style.left.px]="m.left" [style.width.px]="m.width">{{ m.label }}</div>
+            }
+          </div>
+
+          <div class="timeline__today" [style.left.px]="todayLeft()">
+            <span class="timeline__today-label">Today</span>
+          </div>
+
+          <div class="lane" [style.height.px]="eventLaneHeight()">
+            @for (bar of eventLayout().bars; track bar.row.pairKey + bar.row.startDate) {
+              <div
+                class="bar bar--event"
+                [class.bar--predicted]="bar.row.status === 'predicted'"
+                [style.left.px]="bar.left"
+                [style.width.px]="bar.width"
+                [style.top.px]="bar.top"
+                [style.height.px]="bar.height"
+                tabindex="0"
+                (pointerenter)="showTooltip(bar.row, $event)"
+                (focus)="showTooltip(bar.row, $event)"
+                (pointerleave)="hideTooltip()"
+                (blur)="hideTooltip()"
+              >
+                @if (bar.row.imageUrl) {
+                  <img class="bar__image" [src]="bar.row.imageUrl" alt="" loading="lazy" />
+                }
+                <div class="bar__overlay">
+                  <span class="bar__label">{{ displayName(bar.row) }}</span>
+                </div>
+                <div class="bar__chips">
+                  @if (bar.row.status === 'predicted') {
+                    <span class="bar__chip bar__chip--predicted">Predicted</span>
+                  }
+                  @if (bar.row.irregular) {
+                    <span class="bar__chip bar__chip--irregular">&#9888;</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="lane" [style.height.px]="bannerLaneHeight()">
+            @for (bar of bannerLayout().bars; track bar.row.pairKey + bar.row.startDate) {
+              <div
+                class="bar bar--banner"
+                [class.bar--predicted]="bar.row.status === 'predicted'"
+                [style.left.px]="bar.left"
+                [style.width.px]="bar.width"
+                [style.top.px]="bar.top"
+                [style.height.px]="bar.height"
+                tabindex="0"
+                (pointerenter)="showTooltip(bar.row, $event)"
+                (focus)="showTooltip(bar.row, $event)"
+                (pointerleave)="hideTooltip()"
+                (blur)="hideTooltip()"
+              >
+                @if (bar.row.imageUrl) {
+                  <img class="bar__image" [src]="bar.row.imageUrl" alt="" loading="lazy" />
+                }
+                <div class="bar__overlay">
+                  <span class="bar__label">{{ displayName(bar.row) }}</span>
+                </div>
+                <div class="bar__chips">
+                  @if (bar.row.status === 'predicted') {
+                    <span class="bar__chip bar__chip--predicted">Predicted</span>
+                  }
+                  @if (bar.row.irregular) {
+                    <span class="bar__chip bar__chip--irregular">&#9888;</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (tooltip(); as t) {
+      <div class="tooltip" [style.left.px]="t.x" [style.top.px]="t.y">
+        <strong>{{ displayName(t.row) }}</strong>
+        <div>{{ t.row.startDate | date: 'MMM d, y' }} – {{ t.row.endDate | date: 'MMM d, y' }}</div>
+        <div class="tooltip__meta">
+          {{ t.row.status === 'predicted' ? 'Predicted' : 'Confirmed' }}
+          @if (t.row.type) { &middot; {{ t.row.type }} }
+        </div>
+        @if (t.row.irregular) {
+          <div class="tooltip__warn">&#9888; Doesn't fit the usual Tuesday / 1–2 week pattern — verify manually.</div>
+        }
+      </div>
+    }
+  } @else {
+    <table class="table-view">
+      <thead>
+        <tr>
+          <th>Dates</th>
+          <th>Track</th>
+          <th>Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.pairKey + row.track + row.startDate) {
+          <tr>
+            <td>{{ row.startDate | date: 'MMM d' }} – {{ row.endDate | date: 'MMM d, y' }}</td>
+            <td>{{ row.track }}</td>
+            <td>{{ displayName(row) }} @if (row.irregular) { <span title="Verify manually">&#9888;</span> }</td>
+            <td>{{ row.status }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>
