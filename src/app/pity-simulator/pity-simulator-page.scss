@@ -14,8 +14,9 @@
   font-size: 1.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .placeholder {
-    color: #c3c2b7;
-  }
+// See app.scss for why this is :host-context([data-theme]) rather than
+// @media (prefers-color-scheme) — a media query can't be overridden by the nav's
+// manual light/dark toggle, which is the entire point of it existing.
+:host-context([data-theme='dark']) .placeholder {
+  color: #c3c2b7;
 }
