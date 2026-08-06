@@ -30,12 +30,21 @@ html {
   );
 }
 
-body {
-  // `light dark`, not the schematic's default `light` — defers to the same
-  // prefers-color-scheme signal every other stylesheet in this app keys off, so
-  // Material's auto-generated dark variant (see above) actually activates.
-  color-scheme: light dark;
+// `color-scheme` is set explicitly per theme, not the schematic's default `light dark`
+// (which just defers to the OS) — index.html's inline script and ThemeService
+// (src/app/theme.service.ts) stamp data-theme on <html> as the single source of truth,
+// covering both the initial system-preference read AND the nav's manual override in
+// one place. `color-scheme` is inherited, so this alone is enough for Material's
+// light-dark()-based system variables (see the mat.theme() include above) to follow.
+html[data-theme='light'] {
+  color-scheme: light;
+}
 
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
   // NB: background-color/color are deliberately NOT set from Material's system
   // variables here — the site's own page-plane rule below (already validated,
   // shared with every other component) always wins the cascade for those two
@@ -55,10 +64,11 @@ body {
   color: #0b0b0b;
 }
 
-@media (prefers-color-scheme: dark) {
-  html,
-  body {
-    background: #0d0d0d; /* page plane, dark */
-    color: #ffffff;
-  }
+// See app.scss for why this is an attribute selector rather than
+// @media (prefers-color-scheme) — a media query can't be overridden by the nav's
+// manual light/dark toggle, which is the entire point of it existing.
+html[data-theme='dark'],
+html[data-theme='dark'] body {
+  background: #0d0d0d; /* page plane, dark */
+  color: #ffffff;
 }

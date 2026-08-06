@@ -26,6 +26,10 @@
   gap: 1.25rem;
 }
 
+.nav__theme-toggle {
+  margin-left: auto; // pushes it to the far right regardless of how many tool links precede it
+}
+
 .nav__link {
   color: #52514e;
   text-decoration: none;
@@ -55,11 +59,13 @@
   padding: 1.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :host {
-    color: #ffffff;
-    background: #0d0d0d;
-  }
+// Set by ThemeService/index.html's inline script on <html>, outside this component's
+// own encapsulation boundary — :host-context() is what lets :host react to it.
+// Deliberately not @media (prefers-color-scheme: dark) anymore: that would fight a
+// manual override, which defeats the whole point of the nav toggle.
+:host-context([data-theme='dark']) {
+  color: #ffffff;
+  background: #0d0d0d;
 
   .nav {
     border-bottom-color: rgba(255, 255, 255, 0.1);

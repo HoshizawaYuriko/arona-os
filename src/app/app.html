@@ -5,6 +5,16 @@
       <a class="nav__link" routerLink="/roadmap" routerLinkActive="nav__link--active">Predicted Roadmap</a>
       <a class="nav__link" routerLink="/pity-simulator" routerLinkActive="nav__link--active">Pity System Simulator</a>
     </div>
+
+    <mat-button-toggle-group
+      class="nav__theme-toggle"
+      [value]="themeService.current()"
+      (change)="onThemeChange($event)"
+      aria-label="Color theme"
+    >
+      <mat-button-toggle value="light">Arona Mode</mat-button-toggle>
+      <mat-button-toggle value="dark">Plana Mode</mat-button-toggle>
+    </mat-button-toggle-group>
   </nav>
 
   <main class="shell__content">

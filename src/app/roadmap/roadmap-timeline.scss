@@ -14,19 +14,20 @@
   --border: rgba(11, 11, 11, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :host {
-    --surface-1: #1a1a19;
-    --text-primary: #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted: #898781;
-    --gridline: #2c2c2a;
-    --baseline: #383835;
-    --series-event: #3987e5;
-    --series-banner: #d95926;
-    --status-warning: #fab219;
-    --border: rgba(255, 255, 255, 0.1);
-  }
+// See app.scss for why this is :host-context([data-theme]) rather than
+// @media (prefers-color-scheme) — a media query can't be overridden by the nav's
+// manual light/dark toggle, which is the entire point of it existing.
+:host-context([data-theme='dark']) {
+  --surface-1: #1a1a19;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --gridline: #2c2c2a;
+  --baseline: #383835;
+  --series-event: #3987e5;
+  --series-banner: #d95926;
+  --status-warning: #fab219;
+  --border: rgba(255, 255, 255, 0.1);
 }
 
 .roadmap {

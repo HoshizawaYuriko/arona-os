@@ -2,6 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Runs synchronously, before any stylesheet paints, so there's no flash of the
+         wrong theme on load — ThemeService (src/app/theme.service.ts) reads this same
+         attribute back out as its initial value rather than recomputing anything. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('arona-os-theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
     <title>Arona OS</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
