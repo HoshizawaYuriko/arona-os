@@ -1,6 +1,6 @@
 // Pure date-math for laying the timeline out — kept framework-free so it's easy to
 // unit test and to reason about independently of the rendering component.
-import { TimelineRow } from '../models/schedule';
+import { TimelineRow } from './schedule';
 
 // bluearchive.wiki's banner/event art is a fixed 612×288px (≈17:8, confirmed against
 // the actual files).

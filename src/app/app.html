@@ -1,18 +1,13 @@
-<main class="page">
-  <header class="page__header">
-    <h1>Blue Archive Global — Predicted Roadmap</h1>
-    <p class="page__subtitle">
-      Confirmed dates come straight from Global's own schedule; dashed bars are Japan's
-      already-known queue re-mapped onto Global's Tuesday reset cadence.
-    </p>
-    @if (generatedAt()) {
-      <p class="page__meta">Last updated {{ generatedAt() | date: 'medium' }}</p>
-    }
-  </header>
+<div class="shell">
+  <nav class="nav">
+    <a class="nav__brand" routerLink="/">Arona OS</a>
+    <div class="nav__links">
+      <a class="nav__link" routerLink="/roadmap" routerLinkActive="nav__link--active">Predicted Roadmap</a>
+      <a class="nav__link" routerLink="/pity-simulator" routerLinkActive="nav__link--active">Pity System Simulator</a>
+    </div>
+  </nav>
 
-  @if (loadError()) {
-    <p class="error">{{ loadError() }}</p>
-  }
-
-  <app-roadmap-timeline [rows]="rows()" />
-</main>
+  <main class="shell__content">
+    <router-outlet />
+  </main>
+</div>

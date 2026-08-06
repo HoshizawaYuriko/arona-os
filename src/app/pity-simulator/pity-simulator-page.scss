@@ -1,0 +1,21 @@
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  color: #52514e;
+}
+
+.placeholder h1 {
+  color: inherit;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .placeholder {
+    color: #c3c2b7;
+  }
+}
