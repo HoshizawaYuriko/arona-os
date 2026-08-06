@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { TimelineRow } from '../models/schedule';
+import { TimelineRow } from './schedule';
 import { EVENT_CARD_HEIGHT, PX_PER_DAY, daysBetween, layoutLane, monthSegments } from './layout';
 
 const HISTORY_WINDOW_DAYS = 42; // ~6 weeks of past context by default, expandable

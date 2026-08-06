@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
-import { Schedule, TimelineRow } from '../models/schedule';
+import { Schedule, TimelineRow } from './schedule';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {

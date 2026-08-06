@@ -1,0 +1,28 @@
+.page__header {
+  margin-bottom: 1.25rem;
+}
+
+.page__subtitle {
+  color: #52514e;
+  max-width: 160ch;
+}
+
+.page__meta {
+  font-size: 0.85rem;
+  color: #898781;
+}
+
+.error {
+  color: #d03b3b;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  .page__subtitle {
+    color: #c3c2b7;
+  }
+
+  .page__meta {
+    color: #898781;
+  }
+}
