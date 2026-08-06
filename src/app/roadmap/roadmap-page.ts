@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 import { ScheduleService } from './schedule.service';
 import { TimelineRow } from './schedule';
@@ -7,7 +7,7 @@ import { RoadmapTimeline } from './roadmap-timeline';
 
 @Component({
   selector: 'app-roadmap-page',
-  imports: [CommonModule, RoadmapTimeline],
+  imports: [DatePipe, RoadmapTimeline],
   templateUrl: './roadmap-page.html',
   styleUrl: './roadmap-page.scss',
 })

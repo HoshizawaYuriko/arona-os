@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -22,7 +22,7 @@ interface TooltipState {
 
 @Component({
   selector: 'app-roadmap-timeline',
-  imports: [CommonModule],
+  imports: [DatePipe],
   templateUrl: './roadmap-timeline.html',
   styleUrl: './roadmap-timeline.scss',
 })
