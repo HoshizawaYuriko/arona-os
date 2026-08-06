@@ -8,6 +8,9 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatSlideToggle, MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 import { TimelineRow } from './schedule';
 import { EVENT_CARD_HEIGHT, PX_PER_DAY, daysBetween, layoutLane, monthSegments } from './layout';
@@ -22,7 +25,7 @@ interface TooltipState {
 
 @Component({
   selector: 'app-roadmap-timeline',
-  imports: [DatePipe],
+  imports: [DatePipe, MatButton, MatButtonToggle, MatButtonToggleGroup, MatSlideToggle],
   templateUrl: './roadmap-timeline.html',
   styleUrl: './roadmap-timeline.scss',
 })
@@ -99,12 +102,12 @@ export class RoadmapTimeline {
     if (el) el.scrollLeft = Math.max(this.todayLeft() - 80, 0);
   }
 
-  protected toggleHistory(): void {
-    this.showFullHistory.update((v) => !v);
+  protected onHistoryToggle(event: MatSlideToggleChange): void {
+    this.showFullHistory.set(event.checked);
   }
 
-  protected toggleView(): void {
-    this.tableView.update((v) => !v);
+  protected onViewChange(event: MatButtonToggleChange): void {
+    this.tableView.set(event.value === 'table');
   }
 
   protected showTooltip(row: TimelineRow, event: PointerEvent | FocusEvent): void {

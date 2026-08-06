@@ -1,14 +1,19 @@
 <section class="roadmap">
   <div class="roadmap__toolbar">
     <div class="roadmap__presets">
-      <button type="button" (click)="jumpToToday()">Today</button>
-      <button type="button" (click)="toggleHistory()">
-        {{ showFullHistory() ? 'Hide older history' : 'Show full history' }}
-      </button>
+      <button matButton="outlined" type="button" (click)="jumpToToday()">Today</button>
+      <mat-slide-toggle [checked]="showFullHistory()" (change)="onHistoryToggle($event)">
+        Show full history
+      </mat-slide-toggle>
     </div>
-    <button type="button" class="roadmap__view-toggle" (click)="toggleView()">
-      {{ tableView() ? 'View as timeline' : 'View as table' }}
-    </button>
+    <mat-button-toggle-group
+      [value]="tableView() ? 'table' : 'timeline'"
+      (change)="onViewChange($event)"
+      aria-label="View mode"
+    >
+      <mat-button-toggle value="timeline">Timeline</mat-button-toggle>
+      <mat-button-toggle value="table">Table</mat-button-toggle>
+    </mat-button-toggle-group>
   </div>
 
   <div class="legend">
