@@ -7,12 +7,20 @@
       </mat-slide-toggle>
     </div>
     <mat-button-toggle-group
+      class="roadmap__view-toggle"
       [value]="tableView() ? 'table' : 'timeline'"
       (change)="onViewChange($event)"
       aria-label="View mode"
+      hideSingleSelectionIndicator
     >
-      <mat-button-toggle value="timeline">Timeline</mat-button-toggle>
-      <mat-button-toggle value="table">Table</mat-button-toggle>
+      <mat-button-toggle value="timeline">
+        @if (!tableView()) { <mat-icon>event_note</mat-icon> }
+        Timeline
+      </mat-button-toggle>
+      <mat-button-toggle value="table">
+        @if (tableView()) { <mat-icon>table_chart</mat-icon> }
+        Table
+      </mat-button-toggle>
     </mat-button-toggle-group>
   </div>
 

@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatIcon } from '@angular/material/icon';
 import { MatSlideToggle, MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 import { TimelineRow } from './schedule';
@@ -25,7 +26,7 @@ interface TooltipState {
 
 @Component({
   selector: 'app-roadmap-timeline',
-  imports: [DatePipe, MatButton, MatButtonToggle, MatButtonToggleGroup, MatSlideToggle],
+  imports: [DatePipe, MatButton, MatButtonToggle, MatButtonToggleGroup, MatIcon, MatSlideToggle],
   templateUrl: './roadmap-timeline.html',
   styleUrl: './roadmap-timeline.scss',
 })

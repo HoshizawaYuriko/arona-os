@@ -1,6 +1,6 @@
 <div class="shell">
   <nav class="nav">
-    <a class="nav__brand" routerLink="/">Arona OS</a>
+    <a class="nav__brand" routerLink="/">{{ brandName() }}</a>
     <div class="nav__links">
       <a class="nav__link" routerLink="/roadmap" routerLinkActive="nav__link--active">Predicted Roadmap</a>
       <a class="nav__link" routerLink="/pity-simulator" routerLinkActive="nav__link--active">Pity System Simulator</a>
@@ -11,9 +11,16 @@
       [value]="themeService.current()"
       (change)="onThemeChange($event)"
       aria-label="Color theme"
+      hideSingleSelectionIndicator
     >
-      <mat-button-toggle value="light">Arona Mode</mat-button-toggle>
-      <mat-button-toggle value="dark">Plana Mode</mat-button-toggle>
+      <mat-button-toggle value="light">
+        @if (themeService.current() === 'light') { <mat-icon>light_mode</mat-icon> }
+        Arona Mode
+      </mat-button-toggle>
+      <mat-button-toggle value="dark">
+        @if (themeService.current() === 'dark') { <mat-icon>dark_mode</mat-icon> }
+        Plana Mode
+      </mat-button-toggle>
     </mat-button-toggle-group>
   </nav>
 
