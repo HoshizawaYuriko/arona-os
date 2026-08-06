@@ -1,13 +1,63 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+// Generated via `ng generate @angular/material:theme-color --primary-color="#2a78d6"
+// --tertiary-color="#eb6834"` — the exact categorical slot 1/2 hues already used
+// everywhere else on the site (Events/Banners lanes, nav active-link accent), so
+// Material components land in the same palette as the rest of the app instead of the
+// schematic's unrelated default azure/blue.
+@use 'theme-colors';
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: theme-colors.$primary-palette,
+        tertiary: theme-colors.$tertiary-palette,
+        // Not set explicitly = defaults to `color-scheme` (see Material's own
+        // _system.scss): emits both light and dark variants via the CSS light-dark()
+        // function, switched by the `color-scheme` property below — not a second
+        // mat.theme() call or a manual media query.
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  // `light dark`, not the schematic's default `light` — defers to the same
+  // prefers-color-scheme signal every other stylesheet in this app keys off, so
+  // Material's auto-generated dark variant (see above) actually activates.
+  color-scheme: light dark;
+
+  // NB: background-color/color are deliberately NOT set from Material's system
+  // variables here — the site's own page-plane rule below (already validated,
+  // shared with every other component) always wins the cascade for those two
+  // properties regardless, so setting them here would just be dead code. The system
+  // variables Material needs are still defined above on `html`; components read them
+  // directly regardless of what the plain page background is doing.
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}
 /* You can add global styles to this file, and also import other style files */
 
-html, body {
+html,
+body {
   margin: 0;
   background: #f9f9f7; /* page plane, light */
   color: #0b0b0b;
 }
 
 @media (prefers-color-scheme: dark) {
-  html, body {
+  html,
+  body {
     background: #0d0d0d; /* page plane, dark */
     color: #ffffff;
   }
