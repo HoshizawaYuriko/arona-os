@@ -5,7 +5,6 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-    types: [closed]
   schedule:
     # Daily — picks up newly-announced JP content. GitHub may run scheduled workflows a
     # few minutes late under load, and auto-disables the cron after 60 days with no repo
@@ -26,9 +25,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Skips the whole pipeline (deploy `needs: build`, so it's skipped too) for a PR
-    # that was closed WITHOUT merging — only the merge case should deploy.
-    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
     steps:
       # Explicit ref: for a pull_request event, checkout defaults to a synthetic
       # PR-merge-preview ref rather than main's actual tip — same content after a real
