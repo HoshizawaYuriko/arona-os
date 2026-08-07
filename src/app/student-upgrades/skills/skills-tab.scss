@@ -1,0 +1,22 @@
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  color: #52514e;
+}
+
+.placeholder h1 {
+  color: inherit;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+// See app.scss for why this is :host-context([data-theme]) rather than
+// @media (prefers-color-scheme) — a media query can't be overridden by the nav's
+// manual light/dark toggle, which is the entire point of it existing.
+:host-context([data-theme='dark']) .placeholder {
+  color: #c3c2b7;
+}

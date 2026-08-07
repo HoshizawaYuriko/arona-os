@@ -1,0 +1,115 @@
+<h1>Student EXP Calculator</h1>
+
+<section class="level-range">
+  <div class="level-range__label">
+    <span>Start Level: {{ startLevel() }}</span>
+    <span>Target Level: {{ targetLevel() }}</span>
+  </div>
+  <mat-slider class="level-range__slider" [min]="1" [max]="maxLevel" [step]="1" discrete>
+    <input matSliderStartThumb [value]="startLevel()" (valueChange)="onStartLevelChange($event)" />
+    <input matSliderEndThumb [value]="targetLevel()" (valueChange)="onTargetLevelChange($event)" />
+  </mat-slider>
+</section>
+
+<section class="reports">
+  @for (report of displayReports; track report.id; let i = $index) {
+    <div class="report-card__image-wrapper" [style.grid-column]="i + 1" style="grid-row: 1">
+      <button
+        type="button"
+        class="report-card__image-button"
+        (pointerdown)="onPressStart(report.id, 'increment')"
+        (pointerup)="onPressEnd()"
+        (pointerleave)="onPressEnd()"
+        (pointercancel)="onPressEnd()"
+        (click)="onImageClick(report.id)"
+      >
+        <img [src]="imagePath(report.id)" [alt]="report.name" />
+      </button>
+      @if (used()[report.id] > 0) {
+        <button
+          type="button"
+          class="report-card__decrement-button"
+          [attr.aria-label]="'Remove one used ' + report.name"
+          (pointerdown)="onPressStart(report.id, 'decrement')"
+          (pointerup)="onPressEnd()"
+          (pointerleave)="onPressEnd()"
+          (pointercancel)="onPressEnd()"
+          (click)="onDecrementClick(report.id)"
+        >
+          <mat-icon>remove</mat-icon>
+        </button>
+      }
+    </div>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="report-card__field" [style.grid-column]="i + 1" style="grid-row: 2">
+      <mat-label>Owned</mat-label>
+      <input
+        matInput
+        type="number"
+        min="0"
+        [value]="owned()[report.id]"
+        (input)="updateOwned(report.id, $any($event.target).value)"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="report-card__field" [style.grid-column]="i + 1" style="grid-row: 3">
+      <mat-label>Used</mat-label>
+      <input
+        matInput
+        type="number"
+        min="0"
+        [value]="used()[report.id]"
+        (input)="updateUsed(report.id, $any($event.target).value)"
+      />
+    </mat-form-field>
+  }
+
+  <button
+    matButton="outlined"
+    type="button"
+    class="reports__reset-button"
+    [style.grid-column]="displayReports.length + 1"
+    style="grid-row: 2"
+    (click)="resetOwned()"
+  >
+    Reset
+  </button>
+  <button
+    matButton="outlined"
+    type="button"
+    class="reports__reset-button"
+    [style.grid-column]="displayReports.length + 1"
+    style="grid-row: 3"
+    (click)="resetUsed()"
+  >
+    Reset
+  </button>
+</section>
+
+<section class="result">
+  <div class="result__header">
+    <p class="result__credits">
+      <img class="result__credits-icon" src="images/student-upgrades/credits.png" alt="Credits" />
+      Credits cost: {{ usedCreditsCost() }}
+    </p>
+    <button matButton="filled" type="button" (click)="autoSelect()">Auto Select</button>
+  </div>
+
+  <p class="result__level">
+    Lv.{{ startLevel() }} &rarr; <span class="result__level-highlight">Lv.{{ resultLevel() }}</span>
+  </p>
+
+  <div class="result__progress">
+    <mat-progress-bar
+      class="result__progress-bar"
+      [value]="progressPercent()"
+      [color]="stepProgress().isOverflowing ? 'warn' : 'primary'"
+    ></mat-progress-bar>
+    <span class="result__progress-text">
+      <span [class.result__progress-text--overflow]="stepProgress().isOverflowing">{{ stepProgress().numerator }}</span
+      >/{{ stepProgress().denominator }}
+    </span>
+  </div>
+
+  @if (stepProgress().isOverflowing) {
+    <p class="result__warning">&#9888; {{ stepProgress().overflowAmount }} EXP will overflow past Level {{ maxLevel }}.</p>
+  }
+</section>

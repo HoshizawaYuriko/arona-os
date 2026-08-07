@@ -1,0 +1,39 @@
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  <a mat-tab-link routerLink="skills" routerLinkActive #skillsLink="routerLinkActive" [active]="skillsLink.isActive">
+    Skills
+  </a>
+  <a
+    mat-tab-link
+    routerLink="equipment"
+    routerLinkActive
+    #equipmentLink="routerLinkActive"
+    [active]="equipmentLink.isActive"
+  >
+    Equipment
+  </a>
+  <a
+    mat-tab-link
+    routerLink="exp"
+    routerLinkActive
+    #levelUpLink="routerLinkActive"
+    [active]="levelUpLink.isActive"
+  >
+    Level Up
+  </a>
+  <a
+    mat-tab-link
+    routerLink="eleph-weapon"
+    routerLinkActive
+    #elephLink="routerLinkActive"
+    [active]="elephLink.isActive"
+  >
+    Mystic Unlock<br />Weapon Growth
+  </a>
+  <a mat-tab-link routerLink="talent" routerLinkActive #talentLink="routerLinkActive" [active]="talentLink.isActive">
+    Talent
+  </a>
+</nav>
+
+<mat-tab-nav-panel #tabPanel>
+  <router-outlet />
+</mat-tab-nav-panel>

@@ -23,6 +23,6 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const links = Array.from(compiled.querySelectorAll('.nav__link')).map((el) => el.textContent);
     expect(compiled.querySelector('.nav__brand')?.textContent).toContain('Arona OS');
-    expect(links).toEqual(['Predicted Roadmap', 'Pity System Simulator']);
+    expect(links).toEqual(['Predicted Roadmap', 'Pity System Simulator', 'Student Upgrades']);
   });
 });

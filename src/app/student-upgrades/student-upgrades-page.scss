@@ -1,0 +1,19 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+nav[mat-tab-nav-bar] {
+  margin-bottom: 1.5rem;
+}
+
+// The Mystic Unlock/Weapon Growth tab is a deliberate two-line label
+a[mat-tab-link] {
+  min-height: 56px;
+  line-height: 1.3;
+  text-align: center;
+  white-space: normal;
+}
+
+mat-tab-nav-panel {
+  display: block;
+}
