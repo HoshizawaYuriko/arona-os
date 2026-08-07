@@ -1,0 +1,231 @@
+.level-range {
+  margin: 1.5rem 0;
+}
+
+.level-range__label {
+  // Shares the slider's own max-width so "Target Level" lands over its right thumb's
+  // end rather than trailing off wherever the text happens to end.
+  display: flex;
+  justify-content: space-between;
+  max-width: 400px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.level-range__slider {
+  display: block;
+  // Full-width made this awkward to drag on wide screens — dragging a level range
+  // shouldn't require sweeping the whole viewport. Capped, not flexed.
+  max-width: 400px;
+  width: 100%;
+}
+
+.reports {
+  // Grid rather than nested flex columns: an image/Owned/Used row shared across all
+  // report columns is what lets the reset buttons drop straight into the Owned/Used
+  // row bands of a trailing column, vertically centered against the fields either side
+  // of them, instead of eyeballing pixel offsets to fake the same alignment.
+  display: grid;
+  grid-template-columns: repeat(4, 160px) auto;
+  column-gap: 1.5rem;
+  row-gap: 0.5rem;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.reports__reset-button {
+  justify-self: start;
+}
+
+.report-card__image-wrapper {
+  // Positioning context for the minus badge — it needs to sit at the image's own top
+  // right corner regardless of where that corner ends up in the grid.
+  position: relative;
+}
+
+.report-card__image-button {
+  display: block;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: scale(1);
+    // Eased both ways so release doesn't just snap back — :active itself already ends
+    // the instant the mouse/touch is released, this transition is what makes that edge
+    // visible as a little bounce-back rather than an instant jump. Lives on the image,
+    // not the button, so the hover outline (drawn on the button's own border box)
+    // doesn't shrink along with it.
+    transition: transform 0.1s ease;
+  }
+
+  &:hover {
+    outline: 2px solid rgba(11, 11, 11, 0.2);
+  }
+
+  &:active img {
+    transform: scale(0.92);
+  }
+}
+
+.report-card__decrement-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  transform: scale(1);
+  transition: transform 0.1s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+.report-card__field {
+  margin: 0.4rem 0;
+  width: 100%;
+}
+
+.result {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(11, 11, 11, 0.1);
+  border-radius: 8px;
+  max-width: 640px;
+}
+
+.result__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.result__credits {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.result__credits-icon {
+  height: 2.5rem;
+  width: auto;
+}
+
+.result__level {
+  font-size: 1.1rem;
+}
+
+.result__level-highlight {
+  color: #1a7a3c;
+  font-weight: 700;
+}
+
+.result__progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.result__progress-bar {
+  flex: 1;
+
+  // MatProgressBar has no input for its fill animation — it's a 250ms CSS transition
+  // baked into the component's own (globally-encapsulated) stylesheet. Rapid hold-to-
+  // repeat increments outrun it, so it visibly slides backward whenever the step resets
+  // mid-animation. ::ng-deep is needed to reach past that encapsulation, but scoping it
+  // under this class keeps the override from touching any other progress bar in the app.
+  ::ng-deep .mdc-linear-progress__bar {
+    transition: none;
+  }
+}
+
+.result__progress-text {
+  display: inline-block;
+  // Reserves room for the largest realistic reading ("125645/125645", the biggest
+  // single-level step) so the bar's own flex:1 share doesn't shrink/grow as digit count
+  // changes underneath it — most noticeable going from a big number back down to 0.
+  min-width: 14ch;
+  // Right-aligned so the fixed reserved width doesn't just move the jumping from the
+  // bar onto the text itself — the denominator's end now stays put, and only the
+  // (already fixed-width via tabular-nums) numerator grows/shrinks to its left.
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.result__progress-text--overflow {
+  color: #c62828;
+  font-weight: 700;
+}
+
+.result__warning {
+  color: #b45309;
+  font-weight: 600;
+  margin-top: 0.75rem;
+}
+
+// See app.scss for why this is :host-context([data-theme]) rather than
+// @media (prefers-color-scheme) — a media query can't be overridden by the nav's
+// manual light/dark toggle, which is the entire point of it existing.
+:host-context([data-theme='dark']) {
+  .report-card__image-button:hover {
+    outline-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .report-card__decrement-button {
+    background: rgba(255, 255, 255, 0.95);
+
+    mat-icon {
+        color: rgb(255, 10, 10);
+    }
+  }
+
+  .result {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .result__level-highlight {
+    color: #4ade80;
+  }
+
+  .result__progress-text--overflow {
+    color: #ff6b6b;
+  }
+
+  .result__warning {
+    color: #fab219;
+  }
+}
