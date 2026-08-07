@@ -50,6 +50,15 @@ jobs:
       # "project page" case (https://<user>.github.io/<repo>/). If this repo is deployed
       # to a user/org root page or a custom domain instead, change this to "/".
       - run: npx ng build --base-href "/${{ github.event.repository.name }}/"
+      
+      # GitHub Pages is a static host with no server-side fallback — a direct request
+      # for a deep link (e.g. /student-upgrades/exp) 404s before Angular's router ever
+      # gets a chance to resolve it; only in-app navigation works without this. Pages
+      # does serve a custom 404.html if one exists, so reusing index.html as that 404
+      # response lets the app boot as normal and the router read the real URL itself.
+      # Works because index.html's base-href is absolute (/arona-os/), so its asset
+      # references still resolve correctly no matter which URL triggered the 404.
+      - run: cp dist/arona-os/browser/index.html dist/arona-os/browser/404.html
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
