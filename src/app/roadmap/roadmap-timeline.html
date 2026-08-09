@@ -29,7 +29,6 @@
     <span class="legend__item"><i class="legend__swatch legend__swatch--banner"></i>Banners</span>
     <span class="legend__item"><i class="legend__key legend__key--confirmed"></i>Confirmed</span>
     <span class="legend__item"><i class="legend__key legend__key--predicted"></i>Predicted</span>
-    <span class="legend__item"><i class="legend__key legend__key--irregular">&#9888;</i>Verify manually</span>
   </div>
 
   @if (!tableView()) {
@@ -77,11 +76,11 @@
                   <span class="bar__label">{{ displayName(bar.row) }}</span>
                 </div>
                 <div class="bar__chips">
+                  @if (bar.row.isRerun) {
+                    <span class="bar__chip bar__chip--rerun">Rerun</span>
+                  }
                   @if (bar.row.status === 'predicted') {
                     <span class="bar__chip bar__chip--predicted">Predicted</span>
-                  }
-                  @if (bar.row.irregular) {
-                    <span class="bar__chip bar__chip--irregular">&#9888;</span>
                   }
                 </div>
               </div>
@@ -110,11 +109,17 @@
                   <span class="bar__label">{{ displayName(bar.row) }}</span>
                 </div>
                 <div class="bar__chips">
+                  <span
+                    class="bar__chip bar__chip--type"
+                    [class.bar__chip--critical]="isCriticalBannerType(bar.row.type)"
+                  >
+                    {{ bannerTypeLabel(bar.row.type) }}
+                  </span>
+                  @if (bar.row.isRerun) {
+                    <span class="bar__chip bar__chip--rerun">Rerun</span>
+                  }
                   @if (bar.row.status === 'predicted') {
                     <span class="bar__chip bar__chip--predicted">Predicted</span>
-                  }
-                  @if (bar.row.irregular) {
-                    <span class="bar__chip bar__chip--irregular">&#9888;</span>
                   }
                 </div>
               </div>
@@ -132,9 +137,6 @@
           {{ t.row.status === 'predicted' ? 'Predicted' : 'Confirmed' }}
           @if (t.row.type) { &middot; {{ t.row.type }} }
         </div>
-        @if (t.row.irregular) {
-          <div class="tooltip__warn">&#9888; Doesn't fit the usual Tuesday / 1–2 week pattern — verify manually.</div>
-        }
       </div>
     }
   } @else {
@@ -152,7 +154,7 @@
           <tr>
             <td>{{ row.startDate | date: 'MMM d' }} – {{ row.endDate | date: 'MMM d, y' }}</td>
             <td>{{ row.track }}</td>
-            <td>{{ displayName(row) }} @if (row.irregular) { <span title="Verify manually">&#9888;</span> }</td>
+            <td>{{ displayName(row) }}</td>
             <td>{{ row.status }}</td>
           </tr>
         }

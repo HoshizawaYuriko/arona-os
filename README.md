@@ -25,8 +25,8 @@ Angular app just reads the resulting static JSON.
    valid event/banner lengths) — and the same gap JP itself left before that item, if
    any (events routinely have a dead week with nothing running; banners never do —
    both are measured from real JP history, not assumed). Items that don't fit that
-   pattern (anniversaries, collabs, an unsnappable gap, etc.) are still placed, but
-   flagged `irregular: true` for manual review.
+   pattern (anniversaries, collabs, an unsnappable gap, etc.) are still placed as best
+   as the algorithm can manage.
 4. Output is `public/data/schedule.json` — bundled by `ng build` as a static asset,
    never committed to the repo (see `.gitignore`; CI regenerates it every run).
 5. The Angular app (`src/app`) is a plain client-rendered SPA that fetches
@@ -50,7 +50,7 @@ Angular app just reads the resulting static JSON.
   still auto-computes its own gap, chained from wherever the pinned item lands. The
   scraper warns (doesn't fail) if an override's `pairKey` is never matched — usually
   because the item already became confirmed, or a typo.
-- `manualNotes` — free-text space for tracking known irregular items to fix by hand.
+- `manualNotes` — free-text space for tracking predicted items worth double-checking by hand.
 
 ## Local development
 

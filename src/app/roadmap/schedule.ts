@@ -7,8 +7,8 @@ export interface ScheduleItem {
   startDate: string; // ISO
   endDate: string; // ISO
   status: ScheduleStatus;
-  irregular: boolean;
   notes: string | null;
+  isRerun: boolean;
   imageUrl: string | null;
 }
 

@@ -24,32 +24,57 @@ const CONFIRMED_PATH = path.join(__dirname, 'confirmed.json');
 // this list later if you want those tracked too.
 const EVENT_CATEGORIES = new Set(['Event']);
 
-// Same reasoning for banners: PickupGacha/LimitedGacha/FesGacha are the actual
-// time-limited rate-up banners that rotate weekly/biweekly — what the roadmap means
-// by "banner". The `Select...` variants are standing recruitment pools with no real
-// end date (verified: one has End_date 2099-12-30), which would poison the "latest
-// confirmed" cursor calculation if left in.
-const BANNER_TYPES = new Set(['PickupGacha', 'LimitedGacha', 'FesGacha']);
+// PickupGacha/LimitedGacha/FesGacha are the regular rotating rate-up banners; the two
+// "Select...Archive" types are older characters cycled out of the Standard/Fest pools
+// into their own rotating recruitment banner — see docs/cargo-schema.md for the full
+// breakdown of what each Type means in-game. Deliberately excludes the plain
+// SelectPickupGacha ("Archive Banner"): confirmed via the API that it runs at all
+// times with no real end date (End_date 2099-12-30), so there's nothing to predict —
+// it would also poison the "latest confirmed" cursor calculation if left in.
+const BANNER_TYPES = new Set([
+  'PickupGacha', 'LimitedGacha', 'FesGacha', 'SelectPickupFesGacha', 'SelectPickupLimitedGacha',
+]);
+
+// Belt-and-suspenders alongside the Type allowlist above: a standing/permanent banner
+// isn't only the plain Archive Banner's Type — a "Limited Dash" beginner catch-up
+// banner turned up on JP under Type=SelectPickupFesGacha (one of the types we DO
+// track) but with the same far-future End_date (2099-xx-xx) as the Archive Banner,
+// since it's actually a permanent always-on offer for new players, not a real rotating
+// Fest Archive banner. Filtering on "does this end date look infinite" catches that
+// case (and any future one-off shaped the same way) regardless of which Type it's
+// filed under, rather than only excluding by a fixed Type name.
+const STANDING_BANNER_CUTOFF_YEAR = 2090;
+function isStandingBanner(row) {
+  const year = Number(row['End date']?.slice(0, 4));
+  return Number.isFinite(year) && year >= STANDING_BANNER_CUTOFF_YEAR;
+}
 
 async function fetchEventRows() {
   // NB: Cargo's *query* field names use underscores (Start_date), but the JSON it
   // hands back keys those same values with a space (row['Start date']) — see
-  // normalizeEvent/normalizeBanner, which read the response-shaped names.
+  // normalizeEvent/normalizeBanner, which read the response-shaped names. Fetches
+  // every column on the table (see docs/cargo-schema.md) even though several aren't
+  // consumed yet (NameJP, Reward_exchange_start/end, Description) — cheap to carry
+  // along now via each item's `raw` passthrough (see predict.mjs) rather than having to
+  // remember which columns exist next time they're actually needed.
   const fields = [
-    '_pageName=Page', 'Uid', 'Id', 'OriginalId', 'Server', 'Category',
-    'NameEN', 'Start_date', 'End_date', 'Notes', 'Image',
+    '_pageName=Page', 'Uid', 'Id', 'OriginalId', 'Server', 'Category', 'NameJP', 'NameEN',
+    'Promo', 'Image', 'Start_date', 'End_date', 'Reward_exchange_start', 'Reward_exchange_end',
+    'Notes', 'Description',
   ];
   const rows = await cargoQuery('events', fields, { orderBy: 'Start_date ASC' });
   return rows.filter((r) => EVENT_CATEGORIES.has(r.Category)).map(normalizeEvent);
 }
 
 async function fetchBannerRows() {
+  // Same "fetch every column" reasoning as fetchEventRows() above — Code, NameJP, and
+  // Limited aren't consumed yet either.
   const fields = [
-    '_pageName=Page', 'Uid', 'Id', 'CrossregionId', 'Server', 'Type',
-    'NameEN', 'Rateup_character', 'Rerun', 'Start_date', 'End_date', 'Notes', 'Image',
+    '_pageName=Page', 'Uid', 'Id', 'Server', 'Code', 'Type', 'CrossregionId', 'NameJP', 'NameEN',
+    'Image', 'Rateup_character', 'Rerun', 'Limited', 'Start_date', 'End_date', 'Notes',
   ];
   const rows = await cargoQuery('banners', fields, { orderBy: 'Start_date ASC' });
-  return rows.filter((r) => BANNER_TYPES.has(r.Type)).map(normalizeBanner);
+  return rows.filter((r) => BANNER_TYPES.has(r.Type) && !isStandingBanner(r)).map(normalizeBanner);
 }
 
 async function main() {

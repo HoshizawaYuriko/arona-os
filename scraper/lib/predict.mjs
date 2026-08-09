@@ -24,7 +24,20 @@ export function normalizeEvent(row) {
     startDate: parseCargoDate(row['Start date']),
     endDate: parseCargoDate(row['End date']),
     notes: row.Notes || null,
-    image: row.Image || null, // raw filename — resolveImageUrls() turns this into a URL
+    // Events have no dedicated Rerun column like banners do — "Rerun" is just one of
+    // several free-text values the wiki puts in Notes. Verified across all 102 events:
+    // Notes is non-empty on 43 of them, and exactly 36 of those are the literal string
+    // "Rerun" — the other 7 are genuinely distinct identity notes ("Special Operation
+    // Part 1"–"5", "Combined Operations", "Season 2"), not reruns, so this must match
+    // the exact string rather than treating "any non-empty Notes" as a rerun signal.
+    isRerun: row.Notes === 'Rerun',
+    // Promo first: confirmed by inspection that `Image` is actually an in-game
+    // hotlink-style banner (used to jump to the event's screen) that visually
+    // resembles real gacha banner art closely enough to undermine telling events and
+    // banners apart on the roadmap at a glance. `Promo` is the event's own distinct
+    // key art — falls back to `Image` only since `Promo` is empty on ~9% of events
+    // (18/197 checked), so something still shows rather than nothing.
+    image: row.Promo || row.Image || null, // raw filename — resolveImageUrls() turns this into a URL
     raw: row,
   };
 }
@@ -52,6 +65,15 @@ export function normalizeBanner(row) {
     startDate: parseCargoDate(row['Start date']),
     endDate: parseCargoDate(row['End date']),
     notes: row.Notes || null,
+    // Verified against ~980 real rows grouped by (Server, Rateup character) sorted
+    // chronologically: each server's own first occurrence of a given rate-up is Rerun=0
+    // and every later one is Rerun=1, with one known exception — Archive-type banners'
+    // first-ever tracked combo-rotation can already be Rerun=1 (e.g. JP's first
+    // "Wakamo, Hoshino (Swimsuit), Mika" Fest Archive occurrence), most likely because
+    // those banners by definition only ever feature already-released characters, so
+    // Rerun there may track "these characters have run before" rather than "this exact
+    // rotation has run before." See docs/cargo-schema.md.
+    isRerun: row.Rerun === '1',
     image: row.Image || null, // raw filename — resolveImageUrls() turns this into a URL
     raw: row,
   };
@@ -119,15 +141,17 @@ export function buildQueue(items, { cursorOverride, manualOverrides = [] } = {})
     });
   }
 
-  // Items that ran concurrently on JP (identical Start/End — verified: Blue Archive
-  // routinely runs several banners, occasionally two events, in the same version-update
-  // wave) must land in the same predicted GL slot too, not one after another. Group by
-  // exact (start, end) before walking the cursor forward, instead of walking the flat
-  // date-sorted list item-by-item — that flat walk is what serialized same-wave items
-  // like Niko/Kurumi that should have stayed side by side.
+  // Items that launched together on JP (identical Start — NOT necessarily identical End
+  // too: verified real case, a 1-week Fest Archive banner launched the same day as a
+  // 2-week normal banner) must land on the same predicted GL start too, not one after
+  // another. Group by start alone before walking the cursor forward, instead of walking
+  // the flat date-sorted list item-by-item — that flat walk is what serialized same-wave
+  // items like Niko/Kurumi that should have stayed side by side, and (the bug this
+  // comment used to miss) also wrongly split apart same-start items whose durations
+  // happened to differ, since grouping on (start, end) treated them as unrelated waves.
   const waveMap = new Map();
   for (const jpItem of unmatchedJp) {
-    const key = `${jpItem.startDate.getTime()}|${jpItem.endDate.getTime()}`;
+    const key = jpItem.startDate.getTime();
     if (!waveMap.has(key)) waveMap.set(key, []);
     waveMap.get(key).push(jpItem);
   }
@@ -160,11 +184,15 @@ export function buildQueue(items, { cursorOverride, manualOverrides = [] } = {})
 
   const predicted = [];
   for (const wave of waves) {
-    // All members of a wave share the same JP Start/End by construction (that's the
-    // grouping key), so duration/gap only need computing once per wave.
-    const observedDays = diffDays(wave[0].endDate, wave[0].startDate);
-    const duration = snapDurationDays(observedDays);
-    let irregular = observedDays !== 7 && observedDays !== 14;
+    // Members of a wave now only share a Start, not necessarily an End (see grouping
+    // comment above) — each item's own predicted End comes from its own individually
+    // snapped duration below. What the wave-level cursor advances by, and what becomes
+    // `prevJpEnd` for the next wave's gap measurement, uses the LONGEST of them: that's
+    // genuinely when JP's queue was next clear, not just whichever item happened to be
+    // first in the array.
+    const waveDurations = wave.map((item) => snapDurationDays(diffDays(item.endDate, item.startDate)));
+    const maxDuration = Math.max(...waveDurations);
+    const waveJpEnd = wave.reduce((max, item) => (item.endDate > max ? item.endDate : max), wave[0].endDate);
 
     const override = manualOverrides.find((o) => wave.some((item) => String(item.pairKey) === String(o.pairKey)));
 
@@ -177,23 +205,20 @@ export function buildQueue(items, { cursorOverride, manualOverrides = [] } = {})
       if (prevJpEnd) {
         const rawGap = diffDays(wave[0].startDate, prevJpEnd);
         const gap = snapGapDays(rawGap);
-        irregular ||= Math.abs(rawGap - gap) > 0.1; // didn't land cleanly on a whole week
         cursor = addDays(cursor, gap);
       }
       start = cursor;
     }
-    prevJpEnd = wave[0].endDate; // this wave's JP end becomes the reference for the next one
+    prevJpEnd = waveJpEnd; // the longest-running item's JP end becomes the reference for the next wave
 
-    const end = addDays(start, duration);
-    for (const jpItem of wave) {
+    wave.forEach((jpItem, i) => {
       predicted.push({
         ...jpItem,
         predictedStart: start,
-        predictedEnd: end,
-        irregular, // e.g. anniversaries/collabs — surfaced so the UI can flag rather than hide
+        predictedEnd: addDays(start, waveDurations[i]),
       });
-    }
-    cursor = end; // duration is always a multiple of 7, so this lands back on a Tuesday
+    });
+    cursor = addDays(start, maxDuration); // duration is always a multiple of 7, so this lands back on a Tuesday
   }
 
   // Surfaced so the caller (index.mjs) can warn about a stale/typo'd override instead
@@ -216,8 +241,10 @@ export function serializeItem(item, status) {
     startDate: toIsoDate(item.predictedStart ?? item.startDate),
     endDate: toIsoDate(item.predictedEnd ?? item.endDate),
     status,
-    irregular: item.irregular ?? false,
     notes: item.notes,
+    // Events never set this (normalizeEvent doesn't have a Rerun column to read), so
+    // it's always false there — only banners populate it meaningfully.
+    isRerun: item.isRerun ?? false,
     // Raw Cargo filename for now — index.mjs's resolveImageUrls() pass turns this into
     // an actual `imageUrl` (or null) as a post-processing step, since resolving needs
     // an extra async API round-trip this synchronous function can't make.
