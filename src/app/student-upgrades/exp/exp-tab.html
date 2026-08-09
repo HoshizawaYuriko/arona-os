@@ -21,9 +21,10 @@
         (pointerup)="onPressEnd()"
         (pointerleave)="onPressEnd()"
         (pointercancel)="onPressEnd()"
+        (dragstart)="$event.preventDefault()"
         (click)="onImageClick(report.id)"
       >
-        <img [src]="imagePath(report.id)" [alt]="report.name" />
+        <img [src]="imagePath(report.id)" [alt]="report.name" draggable="false" />
       </button>
       @if (used()[report.id] > 0) {
         <button
