@@ -24,6 +24,13 @@ export function normalizeEvent(row) {
     startDate: parseCargoDate(row['Start date']),
     endDate: parseCargoDate(row['End date']),
     notes: row.Notes || null,
+    // Events have no dedicated Rerun column like banners do — "Rerun" is just one of
+    // several free-text values the wiki puts in Notes. Verified across all 102 events:
+    // Notes is non-empty on 43 of them, and exactly 36 of those are the literal string
+    // "Rerun" — the other 7 are genuinely distinct identity notes ("Special Operation
+    // Part 1"–"5", "Combined Operations", "Season 2"), not reruns, so this must match
+    // the exact string rather than treating "any non-empty Notes" as a rerun signal.
+    isRerun: row.Notes === 'Rerun',
     // Promo first: confirmed by inspection that `Image` is actually an in-game
     // hotlink-style banner (used to jump to the event's screen) that visually
     // resembles real gacha banner art closely enough to undermine telling events and

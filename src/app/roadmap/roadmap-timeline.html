@@ -76,6 +76,9 @@
                   <span class="bar__label">{{ displayName(bar.row) }}</span>
                 </div>
                 <div class="bar__chips">
+                  @if (bar.row.isRerun) {
+                    <span class="bar__chip bar__chip--rerun">Rerun</span>
+                  }
                   @if (bar.row.status === 'predicted') {
                     <span class="bar__chip bar__chip--predicted">Predicted</span>
                   }

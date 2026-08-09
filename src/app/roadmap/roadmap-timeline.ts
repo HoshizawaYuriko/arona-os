@@ -149,15 +149,21 @@ export class RoadmapTimeline {
   // legitimate, e.g. a future rerun filter in the table view). Folding the note in
   // here instead is what caught a real bug report: two "Special Operation: Lore
   // Pursuit" entries looked like a duplicate on the roadmap, but the second one's note
-  // was "Season 2" — a distinct continuation, not a rerun of the first. Same idea
-  // covers the more common "Rerun" note.
+  // was "Season 2" — a distinct continuation, not a rerun of the first.
   //
   // Events-only: on banners, Notes carries genuine mechanical flavor text (e.g. "3★
   // characters rate is doubled to 6%" on Fest banners, see docs/cargo-schema.md) rather
   // than identity-distinguishing info — folding that in turned "Arisu (Battle)" into
   // "Arisu (Battle) (5-year anniversary — 3★ characters rate is doubled to 6%)".
+  //
+  // "Rerun" specifically is excluded even for events despite being a Notes value too —
+  // it's now its own chip (see bar__chip--rerun in the template), and some event names
+  // already have "(Rerun)" baked in by the wiki itself, so appending it again here
+  // produced actual doubled-up names like "(Rerun) Cherry Blossom Festival Commotion!
+  // ~Flowers in the Sky, Ninja on the Ground~ (Rerun)".
   protected displayName(row: TimelineRow): string {
-    return row.track === 'event' && row.notes ? `${row.name} (${row.notes})` : row.name;
+    const notes = row.notes && row.notes !== 'Rerun' ? row.notes : null;
+    return row.track === 'event' && notes ? `${row.name} (${notes})` : row.name;
   }
 
   protected bannerTypeLabel(type: string | null): string {
