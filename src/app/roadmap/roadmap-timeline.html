@@ -106,6 +106,12 @@
                   <span class="bar__label">{{ displayName(bar.row) }}</span>
                 </div>
                 <div class="bar__chips">
+                  <span
+                    class="bar__chip bar__chip--type"
+                    [class.bar__chip--critical]="isCriticalBannerType(bar.row.type)"
+                  >
+                    {{ bannerTypeLabel(bar.row.type) }}
+                  </span>
                   @if (bar.row.status === 'predicted') {
                     <span class="bar__chip bar__chip--predicted">Predicted</span>
                   }

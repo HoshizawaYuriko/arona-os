@@ -18,6 +18,24 @@ import { EVENT_CARD_HEIGHT, PX_PER_DAY, daysBetween, layoutLane, monthSegments }
 
 const HISTORY_WINDOW_DAYS = 42; // ~6 weeks of past context by default, expandable
 
+// Raw Cargo `Type` values -> display labels — see docs/cargo-schema.md for what each
+// one means in-game. `SelectPickupGacha` (the plain, always-available Archive Banner)
+// deliberately never appears here since the scraper excludes it entirely.
+const BANNER_TYPE_LABELS: Record<string, string> = {
+  PickupGacha: 'Standard',
+  LimitedGacha: 'Limited',
+  FesGacha: 'Fest',
+  SelectPickupFesGacha: 'Archive Fest',
+  SelectPickupLimitedGacha: 'Archive Limited',
+};
+
+// Everything except a routine Standard rotation features characters that are either
+// time-limited or otherwise harder to obtain again later — called out with its own
+// border treatment so it doesn't blend in next to an ordinary Standard banner.
+const CRITICAL_BANNER_TYPES = new Set([
+  'LimitedGacha', 'FesGacha', 'SelectPickupFesGacha', 'SelectPickupLimitedGacha',
+]);
+
 interface TooltipState {
   row: TimelineRow;
   x: number;
@@ -133,7 +151,20 @@ export class RoadmapTimeline {
   // Pursuit" entries looked like a duplicate on the roadmap, but the second one's note
   // was "Season 2" — a distinct continuation, not a rerun of the first. Same idea
   // covers the more common "Rerun" note.
+  //
+  // Events-only: on banners, Notes carries genuine mechanical flavor text (e.g. "3★
+  // characters rate is doubled to 6%" on Fest banners, see docs/cargo-schema.md) rather
+  // than identity-distinguishing info — folding that in turned "Arisu (Battle)" into
+  // "Arisu (Battle) (5-year anniversary — 3★ characters rate is doubled to 6%)".
   protected displayName(row: TimelineRow): string {
-    return row.notes ? `${row.name} (${row.notes})` : row.name;
+    return row.track === 'event' && row.notes ? `${row.name} (${row.notes})` : row.name;
+  }
+
+  protected bannerTypeLabel(type: string | null): string {
+    return (type && BANNER_TYPE_LABELS[type]) || type || 'Unknown';
+  }
+
+  protected isCriticalBannerType(type: string | null): boolean {
+    return !!type && CRITICAL_BANNER_TYPES.has(type);
   }
 }

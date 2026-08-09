@@ -10,6 +10,10 @@
   --baseline: #c3c2b7;
   --series-event: #2a78d6;
   --series-banner: #eb6834;
+  // Red rather than another orange — the banner series color is already orange, so a
+  // same-hue border would read as "part of the banner styling" rather than its own
+  // distinct signal for "harder to get again later."
+  --chip-critical-border: #e5484d;
   --border: rgba(11, 11, 11, 0.1);
 }
 
@@ -25,6 +29,7 @@
   --baseline: #383835;
   --series-event: #3987e5;
   --series-banner: #d95926;
+  --chip-critical-border: #ff6b6b;
   --border: rgba(255, 255, 255, 0.1);
 }
 
@@ -287,6 +292,15 @@
   color: #fff;
   background: rgba(0, 0, 0, 0.55);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+// Standard banners get the plain chip treatment above; every other banner type (Limited,
+// Fest, Archive Fest, Archive Limited) features characters that are either time-limited
+// or otherwise harder to obtain again — the border is what carries that distinction, not
+// a different fill color, so it stacks cleanly with the existing Predicted chip instead
+// of competing with it for attention.
+.bar__chip--critical {
+  border: 1.5px solid var(--chip-critical-border);
 }
 
 .tooltip {
