@@ -19,6 +19,6 @@
     "banners": []
   },
 
-  "_manualNotes": "Free-text reminders for yourself about known irregular items (anniversaries, collabs) that the algorithm flagged as `irregular: true` — it still places them on the timeline, this is just where you jot down what to fix by hand.",
+  "_manualNotes": "Free-text reminders for yourself about predicted items worth double-checking by hand (anniversaries, collabs, anything that doesn't follow JP's usual pattern) — the predictor still places them on the timeline as normal, this is just where you jot down what to fix.",
   "manualNotes": []
 }

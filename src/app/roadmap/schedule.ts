@@ -7,7 +7,6 @@ export interface ScheduleItem {
   startDate: string; // ISO
   endDate: string; // ISO
   status: ScheduleStatus;
-  irregular: boolean;
   notes: string | null;
   imageUrl: string | null;
 }

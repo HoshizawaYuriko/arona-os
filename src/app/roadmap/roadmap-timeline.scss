@@ -10,7 +10,6 @@
   --baseline: #c3c2b7;
   --series-event: #2a78d6;
   --series-banner: #eb6834;
-  --status-warning: #fab219;
   --border: rgba(11, 11, 11, 0.1);
 }
 
@@ -26,7 +25,6 @@
   --baseline: #383835;
   --series-event: #3987e5;
   --series-banner: #d95926;
-  --status-warning: #fab219;
   --border: rgba(255, 255, 255, 0.1);
 }
 
@@ -51,8 +49,8 @@
 }
 
 // Legend — always present since this chart carries 2 categorical series (event/banner).
-// Confirmed/predicted and irregular are encoded by shape (fill/border/icon), not by an
-// extra hue, so identity never relies on color alone.
+// Confirmed/predicted is encoded by shape (fill/border), not by an extra hue, so
+// identity never relies on color alone.
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -86,12 +84,6 @@
 
   &--confirmed { background: var(--text-muted); }
   &--predicted { background: transparent; border: 1.5px dashed var(--text-muted); }
-  &--irregular {
-    width: auto;
-    height: auto;
-    color: var(--status-warning);
-    font-size: 0.8rem;
-  }
 }
 
 .timeline-wrap {
@@ -286,8 +278,7 @@
 }
 
 // Status is never color-alone: an explicit label (not just the dashed border/opacity
-// treatment) and, for irregular, an icon — both on the reserved warning step, distinct
-// from both categorical slots.
+// treatment), distinct from both categorical slots.
 .bar__chip {
   font-size: 0.62rem;
   font-weight: 600;
@@ -296,10 +287,6 @@
   color: #fff;
   background: rgba(0, 0, 0, 0.55);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-.bar__chip--irregular {
-  color: var(--status-warning);
 }
 
 .tooltip {
@@ -316,11 +303,6 @@
 
 .tooltip__meta {
   color: var(--text-secondary);
-}
-
-.tooltip__warn {
-  color: var(--status-warning);
-  margin-top: 0.25rem;
 }
 
 .table-view {

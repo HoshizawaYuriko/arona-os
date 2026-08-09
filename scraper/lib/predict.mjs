@@ -164,7 +164,6 @@ export function buildQueue(items, { cursorOverride, manualOverrides = [] } = {})
     // grouping key), so duration/gap only need computing once per wave.
     const observedDays = diffDays(wave[0].endDate, wave[0].startDate);
     const duration = snapDurationDays(observedDays);
-    let irregular = observedDays !== 7 && observedDays !== 14;
 
     const override = manualOverrides.find((o) => wave.some((item) => String(item.pairKey) === String(o.pairKey)));
 
@@ -177,7 +176,6 @@ export function buildQueue(items, { cursorOverride, manualOverrides = [] } = {})
       if (prevJpEnd) {
         const rawGap = diffDays(wave[0].startDate, prevJpEnd);
         const gap = snapGapDays(rawGap);
-        irregular ||= Math.abs(rawGap - gap) > 0.1; // didn't land cleanly on a whole week
         cursor = addDays(cursor, gap);
       }
       start = cursor;
@@ -190,7 +188,6 @@ export function buildQueue(items, { cursorOverride, manualOverrides = [] } = {})
         ...jpItem,
         predictedStart: start,
         predictedEnd: end,
-        irregular, // e.g. anniversaries/collabs — surfaced so the UI can flag rather than hide
       });
     }
     cursor = end; // duration is always a multiple of 7, so this lands back on a Tuesday
@@ -216,7 +213,6 @@ export function serializeItem(item, status) {
     startDate: toIsoDate(item.predictedStart ?? item.startDate),
     endDate: toIsoDate(item.predictedEnd ?? item.endDate),
     status,
-    irregular: item.irregular ?? false,
     notes: item.notes,
     // Raw Cargo filename for now — index.mjs's resolveImageUrls() pass turns this into
     // an actual `imageUrl` (or null) as a post-processing step, since resolving needs
