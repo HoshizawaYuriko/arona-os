@@ -1,4 +1,4 @@
-import { Component, computed, OnDestroy, signal } from '@angular/core';
+import { Component, computed, HostListener, OnDestroy, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -130,6 +130,15 @@ export class ExpTab implements OnDestroy {
     this.scheduleHoldTick(id, HOLD_INITIAL_DELAY_MS, direction);
   }
 
+  // Window-level, not just the element's own (pointerup)/(pointerleave)/(pointercancel)
+  // in the template: those normally suffice, but starting a native browser drag (e.g.
+  // dragging the activity report image mid-hold, before draggable="false" was added)
+  // can swallow the pointer gesture without ever dispatching pointerup/pointercancel
+  // back to the pressed element, leaving the accelerating hold timer running forever in
+  // the background. Listening on the window as well means release is caught regardless
+  // of which element (or none) the pointer ends up over.
+  @HostListener('window:pointerup')
+  @HostListener('window:pointercancel')
   protected onPressEnd(): void {
     this.clearHoldTimer();
   }

@@ -54,11 +54,19 @@
   cursor: pointer;
   border-radius: 8px;
   overflow: hidden;
+  // Belt-and-suspenders alongside the template's draggable="false"/dragstart
+  // preventDefault: browsers treat <img> as draggable by default, and starting a
+  // native image drag while the press-and-hold gesture is active doesn't reliably
+  // fire pointerup/pointercancel back to us, leaving the accelerating hold timer
+  // (see onPressStart in exp-tab.ts) running forever in the background.
+  -webkit-user-drag: none;
+  user-select: none;
 
   img {
     display: block;
     width: 100%;
     height: auto;
+    -webkit-user-drag: none;
     transform: scale(1);
     // Eased both ways so release doesn't just snap back — :active itself already ends
     // the instant the mouse/touch is released, this transition is what makes that edge
