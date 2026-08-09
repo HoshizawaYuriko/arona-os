@@ -58,6 +58,15 @@ export function normalizeBanner(row) {
     startDate: parseCargoDate(row['Start date']),
     endDate: parseCargoDate(row['End date']),
     notes: row.Notes || null,
+    // Verified against ~980 real rows grouped by (Server, Rateup character) sorted
+    // chronologically: each server's own first occurrence of a given rate-up is Rerun=0
+    // and every later one is Rerun=1, with one known exception — Archive-type banners'
+    // first-ever tracked combo-rotation can already be Rerun=1 (e.g. JP's first
+    // "Wakamo, Hoshino (Swimsuit), Mika" Fest Archive occurrence), most likely because
+    // those banners by definition only ever feature already-released characters, so
+    // Rerun there may track "these characters have run before" rather than "this exact
+    // rotation has run before." See docs/cargo-schema.md.
+    isRerun: row.Rerun === '1',
     image: row.Image || null, // raw filename — resolveImageUrls() turns this into a URL
     raw: row,
   };
@@ -226,6 +235,9 @@ export function serializeItem(item, status) {
     endDate: toIsoDate(item.predictedEnd ?? item.endDate),
     status,
     notes: item.notes,
+    // Events never set this (normalizeEvent doesn't have a Rerun column to read), so
+    // it's always false there — only banners populate it meaningfully.
+    isRerun: item.isRerun ?? false,
     // Raw Cargo filename for now — index.mjs's resolveImageUrls() pass turns this into
     // an actual `imageUrl` (or null) as a post-processing step, since resolving needs
     // an extra async API round-trip this synchronous function can't make.
