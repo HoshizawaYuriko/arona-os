@@ -41,8 +41,8 @@ sprites, tracks, unique_gear, world_raids
 | `Category` | String | ✅ | We filter to `"Event"` only (excludes recurring generic campaigns like `Rewards`). |
 | `NameJP` | Wikitext string | ✅ (fetched, unused) | Japanese name. |
 | `NameEN` | Wikitext string | ✅ | English display name. |
-| `Promo` | File | ✅ | **The event's own distinct promotional key art.** Confirmed by inspection this is what we want for the roadmap card — it visually reads as a unique event illustration, not a UI chrome element. Empty on 18/197 checked event rows, so `Image` is still queried as a fallback. |
-| `Image` | File | ✅ (fallback only) | Confirmed by inspection this is actually an in-game hotlink-style banner image (used to jump straight to the event's screen) — it visually resembles actual *gacha banner* artwork closely enough to undermine the roadmap's event-vs-banner visual distinction. We prefer `Promo`, falling back to `Image` only when `Promo` is empty. |
+| `Promo` | File | ✅ | **The event's own distinct promotional key art.** Confirmed by inspection this is what we want for the roadmap card — it visually reads as a unique event illustration, not a UI chrome element. Empty on 18/197 checked event rows, so `Image` is still queried as a fallback. Comes with real spaces in its filename, unlike `Image` — see "Resolving file filenames to real URLs" below, this once broke resolution entirely. |
+| `Image` | File | ✅ (fallback only) | Confirmed by inspection this is actually an in-game hotlink-style banner image (used to jump straight to the event's screen) — it visually resembles actual *gacha banner* artwork closely enough to undermine the roadmap's event-vs-banner visual distinction. We prefer `Promo`, falling back to `Image` only when `Promo` is empty. Filename always comes underscored. |
 | `Start_date` | Start datetime | ✅ | `"YYYY-MM-DD HH:MM:SS"`, UTC. JP's 11:00 JST reset appears as `02:00:00` UTC. |
 | `End_date` | End datetime | ✅ | Same format. Follows a "-1 minute before the actual reset" convention — an end of `01:59:00` frees that same day's `02:00:00` slot for the next item. |
 | `Reward_exchange_start` | Datetime | ✅ (fetched, unused) | Event Shop Opening Time |
@@ -173,6 +173,38 @@ Dash case, plus any future one-off shaped the same way, without needing to know 
 ```
 
 ---
+
+## Resolving file filenames to real URLs
+
+Every file-reference column (`Image` on both tables, `Promo` on events) only ever
+gives Cargo's raw filename — never a URL. Turning that into something an `<img src>`
+can use needs a second round-trip — `action=query&titles=File:<filename>&prop=imageinfo&iiprop=url`,
+handled by `scraper/lib/images.mjs` — which resolves to the real CDN host
+(`https://static.wikitide.net/bluearchivewiki/...`) that the site hotlinks directly
+rather than downloading/rehosting.
+
+**The filenames aren't consistently formatted between fields, and that broke the
+lookup once already.** `Image` values always come with underscores already applied
+(`"Event_Banner_836_Jp.png"`), but `Promo` values come with real, literal spaces
+(`"Event Code BOX Shadow Looming Over Millennium ～One Question and Two Answers～.png"`).
+The batch-resolution code originally force-normalized every *returned* filename to
+underscores before storing it in its result map, on the assumption that every input
+already followed that convention — true for `Image`, false for `Promo`. So a
+`Promo`-sourced lookup, using the original space-separated string, could never match
+the underscore-keyed map entry, even though the file itself resolved successfully
+server-side. That silently produced `imageUrl: null` for every event whose `Promo`
+won the `Promo || Image` fallback (i.e. most of them, since `Promo` is only empty on
+~9% of events) — not because any file was actually missing, but purely because of
+that key mismatch. Confirmed directly: both the `Promo` and the fallback `Image`
+filenames for the affected "Code: BOX" event resolved fine as standalone API calls;
+only our own map lookup was broken.
+
+Fixed by reading MediaWiki's own reported title normalizations — the `{from, to}`
+pairs under `query.normalized` in the response — to map each resolved page back to
+*exactly* the filename that was actually requested, rather than assuming one fixed
+convention. `resolveImageUrls()`'s returned map is now keyed by whatever string you
+passed in, verbatim (spaces, underscores, or otherwise), so the lookup at the call
+site always matches regardless of which field or table the filename came from.
 
 ## Open questions (unclear from what's been checked so far)
 
