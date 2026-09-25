@@ -1,14 +1,15 @@
 # Arona OS
 
 A toolbox of small Blue Archive utilities — no backend, no database, everything is a
-static site with any data fetching done ahead of time in CI. Currently one tool:
+static site with any data fetching done ahead of time in CI.
 
 ## Predicted Roadmap
 
 Predicts Blue Archive **Global**'s upcoming Events/Banners by reading Japan's
 already-known schedule from [bluearchive.wiki](https://bluearchive.wiki) and
-re-mapping it onto Global's queue. A GitHub Actions job scrapes on a schedule; the
-Angular app just reads the resulting static JSON.
+re-mapping it onto Global's queue. The scraper is run locally and its output committed
+to the repo (see "Updating the schedule data" below for why); the Angular app just
+reads the resulting static JSON.
 
 ### How it works
 
@@ -27,8 +28,8 @@ Angular app just reads the resulting static JSON.
    both are measured from real JP history, not assumed). Items that don't fit that
    pattern (anniversaries, collabs, an unsnappable gap, etc.) are still placed as best
    as the algorithm can manage.
-4. Output is `public/data/schedule.json` — bundled by `ng build` as a static asset,
-   never committed to the repo (see `.gitignore`; CI regenerates it every run).
+4. Output is `public/data/schedule.json` — bundled by `ng build` as a static asset.
+   Committed to the repo (see "Updating the schedule data" below).
 5. The Angular app (`src/app`) is a plain client-rendered SPA that fetches
    `data/schedule.json` at runtime and renders a merged events+banners timeline.
 
@@ -52,19 +53,38 @@ Angular app just reads the resulting static JSON.
   because the item already became confirmed, or a typo.
 - `manualNotes` — free-text space for tracking predicted items worth double-checking by hand.
 
+## Updating the schedule data
+
+`node scraper/index.mjs` used to run inside GitHub Actions on a daily schedule. As of
+September 5th 2026, bluearchive.wiki (hosted on Miraheze, behind Cloudflare) started
+returning `HTTP 403` specifically for requests from GitHub-hosted runners — the same
+query succeeds from anywhere else.
+
+Until that gets resolved updating the schedule is a manual step:
+
+```bash
+node scraper/index.mjs   # writes public/data/schedule.json from live wiki data
+git add public/data/schedule.json
+git commit -m "Update schedule data"
+git push                 # or open a PR — either redeploys the site once on main
+```
+
+`public/data/schedule.json` is committed to the repo rather than gitignored for exactly
+this reason — CI now just builds and deploys whatever's already checked in, instead of
+scraping fresh on every run.
+
 ## Local development
 
 ```bash
 npm ci
-node scraper/index.mjs   # writes public/data/schedule.json from live wiki data
-npx ng serve             # http://localhost:4200
+npx ng serve
 ```
 
 ## Deployment
 
-`.github/workflows/deploy.yml` runs the scraper, builds, and deploys to GitHub Pages
-on every push to `main`, once daily on a schedule, and on manual dispatch. One-time
-setup: repo Settings → Pages → **Source: GitHub Actions**.
+`.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to
+`main` and on manual dispatch. One-time setup: repo Settings → Pages → **Source:
+GitHub Actions**.
 
 If this repo isn't deployed as a standard project page
 (`https://<user>.github.io/<repo>/`) — e.g. a custom domain or a user/org root page —
