@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T20:09:59.829Z",
+  "generatedAt": "2026-10-09T16:48:26.765Z",
   "source": "https://bluearchive.wiki (Cargo tables: events, banners)",
   "events": [
     {
@@ -949,6 +949,17 @@
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/9/9b/Event_A_Flower_Blooms_Among_The_Hundred_%EF%BD%9E_Honorable_Sea_Showdown_%EF%BD%9E.png"
     },
     {
+      "pairKey": "847",
+      "name": "A Flower Blooms Among the Hundred: Fair and Square Aquatic Showdown",
+      "type": "Event",
+      "startDate": "2026-09-29T02:00:00.000Z",
+      "endDate": "2026-10-13T01:59:00.000Z",
+      "status": "confirmed",
+      "notes": "Rerun",
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/9/9b/Event_A_Flower_Blooms_Among_The_Hundred_%EF%BD%9E_Honorable_Sea_Showdown_%EF%BD%9E.png"
+    },
+    {
       "pairKey": "848",
       "name": "Summer Sky's Promise",
       "type": "Event",
@@ -1068,17 +1079,6 @@
       "notes": "Season 2",
       "isRerun": false,
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/2/29/Event_Special_Operation_Lore_Pursuit.png"
-    },
-    {
-      "pairKey": "847",
-      "name": "A Flower Blooms Among The Hundred ～ Honorable Sea Showdown ～",
-      "type": "Event",
-      "startDate": "2026-09-29T02:00:00.000Z",
-      "endDate": "2026-10-13T02:00:00.000Z",
-      "status": "predicted",
-      "notes": "Rerun",
-      "isRerun": true,
-      "imageUrl": "https://static.wikitide.net/bluearchivewiki/9/9b/Event_A_Flower_Blooms_Among_The_Hundred_%EF%BD%9E_Honorable_Sea_Showdown_%EF%BD%9E.png"
     },
     {
       "pairKey": "859",
@@ -5307,6 +5307,17 @@
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/3/3e/Lobby_Banner_EN_20251104_02.png"
     },
     {
+      "pairKey": "Kazusa (Band)",
+      "name": "Kazusa (Band)",
+      "type": "LimitedGacha",
+      "startDate": "2026-10-06T02:00:00.000Z",
+      "endDate": "2026-10-13T01:59:00.000Z",
+      "status": "confirmed",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/1/13/Lobby_Banner_EN_20261006_01.png"
+    },
+    {
       "pairKey": "Yoshimi (Band)",
       "name": "Yoshimi (Band)",
       "type": "LimitedGacha",
@@ -5327,6 +5338,17 @@
       "notes": null,
       "isRerun": true,
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/6/6a/Lobby_Banner_EN_20251104_03.png"
+    },
+    {
+      "pairKey": "Yoshimi (Band)",
+      "name": "Yoshimi (Band)",
+      "type": "LimitedGacha",
+      "startDate": "2026-10-06T02:00:00.000Z",
+      "endDate": "2026-10-13T01:59:00.000Z",
+      "status": "confirmed",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/d/d8/Lobby_Banner_EN_20261006_02.png"
     },
     {
       "pairKey": "Kirara",
@@ -6088,6 +6110,17 @@
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/5/5c/Lobby_Banner_EN_20251104_01.png"
     },
     {
+      "pairKey": "Natsu (Band)",
+      "name": "Natsu (Band)",
+      "type": "PickupGacha",
+      "startDate": "2026-10-06T02:00:00.000Z",
+      "endDate": "2026-10-13T01:59:00.000Z",
+      "status": "confirmed",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/1/1e/Lobby_Banner_EN_20261006_03.png"
+    },
+    {
       "pairKey": "Kikyou (Swimsuit), Renge (Swimsuit)",
       "name": "Kikyou (Swimsuit), Renge (Swimsuit)",
       "type": "PickupGacha",
@@ -6099,6 +6132,17 @@
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/4/48/Lobby_Banner_EN_20251118_01.png"
     },
     {
+      "pairKey": "Kikyou (Swimsuit), Renge (Swimsuit)",
+      "name": "Kikyou (Swimsuit), Renge (Swimsuit)",
+      "type": "PickupGacha",
+      "startDate": "2026-09-29T02:00:00.000Z",
+      "endDate": "2026-10-06T01:59:00.000Z",
+      "status": "confirmed",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/4/4d/Lobby_Banner_EN_20260929_02.png"
+    },
+    {
       "pairKey": "Yukari (Swimsuit)",
       "name": "Yukari (Swimsuit)",
       "type": "PickupGacha",
@@ -6108,6 +6152,17 @@
       "notes": null,
       "isRerun": false,
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/a/ae/Lobby_Banner_EN_20251118_02.png"
+    },
+    {
+      "pairKey": "Yukari (Swimsuit)",
+      "name": "Yukari (Swimsuit)",
+      "type": "PickupGacha",
+      "startDate": "2026-09-29T02:00:00.000Z",
+      "endDate": "2026-10-06T01:59:00.000Z",
+      "status": "confirmed",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/3/39/Lobby_Banner_EN_20260929_03.png"
     },
     {
       "pairKey": "Seia (Swimsuit)",
@@ -6484,70 +6539,15 @@
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/d/db/Lobby_Banner_EN_20260915_02.png"
     },
     {
-      "pairKey": "Kikyou (Swimsuit), Renge (Swimsuit)",
-      "name": "Kikyou (Swimsuit), Renge (Swimsuit)",
-      "type": "PickupGacha",
-      "startDate": "2026-09-29T02:00:00.000Z",
-      "endDate": "2026-10-06T02:00:00.000Z",
-      "status": "predicted",
-      "notes": null,
-      "isRerun": true,
-      "imageUrl": "https://static.wikitide.net/bluearchivewiki/c/ca/Lobby_Banner_20260610_02.png"
-    },
-    {
-      "pairKey": "Yukari (Swimsuit)",
-      "name": "Yukari (Swimsuit)",
-      "type": "PickupGacha",
-      "startDate": "2026-09-29T02:00:00.000Z",
-      "endDate": "2026-10-06T02:00:00.000Z",
-      "status": "predicted",
-      "notes": null,
-      "isRerun": true,
-      "imageUrl": "https://static.wikitide.net/bluearchivewiki/a/a1/Lobby_Banner_20260610_03.png"
-    },
-    {
       "pairKey": "Nagusa (Swimsuit)",
       "name": "Nagusa (Swimsuit)",
       "type": "PickupGacha",
       "startDate": "2026-09-29T02:00:00.000Z",
-      "endDate": "2026-10-06T02:00:00.000Z",
-      "status": "predicted",
+      "endDate": "2026-10-06T01:59:00.000Z",
+      "status": "confirmed",
       "notes": null,
       "isRerun": false,
-      "imageUrl": "https://static.wikitide.net/bluearchivewiki/6/62/Lobby_Banner_20260610_01.png"
-    },
-    {
-      "pairKey": "Kazusa (Band)",
-      "name": "Kazusa (Band)",
-      "type": "LimitedGacha",
-      "startDate": "2026-10-06T02:00:00.000Z",
-      "endDate": "2026-10-13T02:00:00.000Z",
-      "status": "predicted",
-      "notes": null,
-      "isRerun": true,
-      "imageUrl": "https://static.wikitide.net/bluearchivewiki/2/23/Lobby_Banner_20260617_01.png"
-    },
-    {
-      "pairKey": "Yoshimi (Band)",
-      "name": "Yoshimi (Band)",
-      "type": "LimitedGacha",
-      "startDate": "2026-10-06T02:00:00.000Z",
-      "endDate": "2026-10-13T02:00:00.000Z",
-      "status": "predicted",
-      "notes": null,
-      "isRerun": true,
-      "imageUrl": "https://static.wikitide.net/bluearchivewiki/a/a5/Lobby_Banner_20260617_02.png"
-    },
-    {
-      "pairKey": "Natsu (Band)",
-      "name": "Natsu (Band)",
-      "type": "PickupGacha",
-      "startDate": "2026-10-06T02:00:00.000Z",
-      "endDate": "2026-10-13T02:00:00.000Z",
-      "status": "predicted",
-      "notes": null,
-      "isRerun": true,
-      "imageUrl": "https://static.wikitide.net/bluearchivewiki/1/15/Lobby_Banner_20260617_03.png"
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/4/44/Lobby_Banner_EN_20260929_01.png"
     },
     {
       "pairKey": "Kisaki (Swimsuit)",
@@ -6900,6 +6900,105 @@
       "notes": null,
       "isRerun": false,
       "imageUrl": "https://static.wikitide.net/bluearchivewiki/d/d3/Lobby_Banner_20260923_02.png"
+    },
+    {
+      "pairKey": "Miyako (Swimsuit)",
+      "name": "Miyako (Swimsuit)",
+      "type": "PickupGacha",
+      "startDate": "2027-01-26T02:00:00.000Z",
+      "endDate": "2027-02-09T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/b/bd/Lobby_Banner_20261007_04.png"
+    },
+    {
+      "pairKey": "Saki (Swimsuit)",
+      "name": "Saki (Swimsuit)",
+      "type": "PickupGacha",
+      "startDate": "2027-01-26T02:00:00.000Z",
+      "endDate": "2027-02-09T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/9/9b/Lobby_Banner_20261007_05.png"
+    },
+    {
+      "pairKey": "Eri",
+      "name": "Eri",
+      "type": "PickupGacha",
+      "startDate": "2027-01-26T02:00:00.000Z",
+      "endDate": "2027-02-09T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/e/e5/Lobby_Banner_20261007_02.png"
+    },
+    {
+      "pairKey": "Kanoe",
+      "name": "Kanoe",
+      "type": "PickupGacha",
+      "startDate": "2027-01-26T02:00:00.000Z",
+      "endDate": "2027-02-09T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/1/12/Lobby_Banner_20261007_03.png"
+    },
+    {
+      "pairKey": "Tsumugi",
+      "name": "Tsumugi",
+      "type": "PickupGacha",
+      "startDate": "2027-01-26T02:00:00.000Z",
+      "endDate": "2027-02-09T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": false,
+      "imageUrl": "https://static.wikitide.net/bluearchivewiki/7/73/Lobby_Banner_20261007_01.png"
+    },
+    {
+      "pairKey": "Noa",
+      "name": "Noa",
+      "type": "PickupGacha",
+      "startDate": "2027-02-09T02:00:00.000Z",
+      "endDate": "2027-02-16T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": null
+    },
+    {
+      "pairKey": "Kanna",
+      "name": "Kanna",
+      "type": "PickupGacha",
+      "startDate": "2027-02-09T02:00:00.000Z",
+      "endDate": "2027-02-16T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": null
+    },
+    {
+      "pairKey": "Marina (Qipao)",
+      "name": "Marina (Qipao)",
+      "type": "PickupGacha",
+      "startDate": "2027-02-09T02:00:00.000Z",
+      "endDate": "2027-02-16T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": null
+    },
+    {
+      "pairKey": "Tomoe (Qipao)",
+      "name": "Tomoe (Qipao)",
+      "type": "PickupGacha",
+      "startDate": "2027-02-09T02:00:00.000Z",
+      "endDate": "2027-02-16T02:00:00.000Z",
+      "status": "predicted",
+      "notes": null,
+      "isRerun": true,
+      "imageUrl": null
     }
   ]
 }
